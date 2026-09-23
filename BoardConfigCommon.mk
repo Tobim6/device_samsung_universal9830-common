@@ -112,6 +112,9 @@ BOARD_ROOT_EXTRA_FOLDERS := efs
 
 # Platform
 BOARD_VENDOR := samsung
+
+# libsecril-client comes from the stock RIL blobs, not hardware/samsung/ril
+TARGET_USES_PREBUILT_SECRIL_CLIENT := true
 TARGET_BOARD_PLATFORM := universal990
 TARGET_BOOTLOADER_BOARD_NAME := exynos990
 TARGET_SOC := exynos990

@@ -364,6 +364,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung/hidl/powershare \
     -hardware/samsung/hidl/vibrator
 
+# Vendor BSP unit tests are not part of a production ROM and trip Soong
+# visibility checks against external/ modules
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung_slsi-linaro/exynos/libhdr/unittest \
+    -hardware/samsung_slsi-linaro/exynos/libsbwchelper/tests \
+    -hardware/samsung_slsi-linaro/exynos/libdisplaycolor/unittest \
+    -hardware/samsung_slsi-linaro/graphics/base/libion/test
+
 # SoundTrigger
 PRODUCT_PACKAGES += \
     android.hardware.soundtrigger@2.3-impl:32 \

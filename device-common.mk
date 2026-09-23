@@ -361,7 +361,8 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung/hidl/livedisplay \
     -hardware/samsung/hidl/fastcharge \
     -hardware/samsung/hidl/touch \
-    -hardware/samsung/hidl/powershare
+    -hardware/samsung/hidl/powershare \
+    -hardware/samsung/hidl/vibrator
 
 # SoundTrigger
 PRODUCT_PACKAGES += \

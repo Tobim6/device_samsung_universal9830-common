@@ -362,7 +362,8 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
 # on this branch already, AdvancedDisplay has the same undefined dependency
 PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung/doze \
-    -hardware/samsung/AdvancedDisplay
+    -hardware/samsung/AdvancedDisplay \
+    -hardware/samsung/hidl/livedisplay
 
 # SoundTrigger
 PRODUCT_PACKAGES += \

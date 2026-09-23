@@ -357,6 +357,13 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/samsung_slsi-linaro/exynos/libaudio/sthal \
     hardware/samsung_slsi-linaro/exynos/gralloc3
 
+# Exclude LineageOS-only modules that depend on org.lineageos.platform.internal,
+# which does not exist in a PixelOS tree; SamsungDoze is intentionally dropped
+# on this branch already, AdvancedDisplay has the same undefined dependency
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung/doze \
+    -hardware/samsung/AdvancedDisplay
+
 # SoundTrigger
 PRODUCT_PACKAGES += \
     android.hardware.soundtrigger@2.3-impl:32 \

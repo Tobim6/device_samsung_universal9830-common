@@ -172,10 +172,6 @@ $(call soong_config_set,lineage_health,fast_charge_node,/sys/class/sec/switch/af
 $(call soong_config_set,lineage_health,fast_charge_value_none,1)
 $(call soong_config_set,lineage_health,fast_charge_value_fast_charge,0)
 
-# Livedisplay
-PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay-service.samsung-exynos
-
 # Media
 PRODUCT_PACKAGES += \
     libExynosOMX_Core \
@@ -294,10 +290,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
 
-# PowerShare
-PRODUCT_PACKAGES += \
-    vendor.lineage.powershare-service.samsung
-
 # Recovery
 PRODUCT_PACKAGES += \
     init.recovery.exynos990.rc
@@ -360,10 +352,16 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
 # Exclude LineageOS-only modules that depend on org.lineageos.platform.internal,
 # which does not exist in a PixelOS tree; SamsungDoze is intentionally dropped
 # on this branch already, AdvancedDisplay has the same undefined dependency
+# These HIDL services target vendor.lineage.*@1.0 interfaces that no longer
+# exist in this tree (migrated to AIDL under hardware/lineage/interfaces/);
+# they are stale and unbuildable, not features PixelOS otherwise ships
 PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung/doze \
     -hardware/samsung/AdvancedDisplay \
-    -hardware/samsung/hidl/livedisplay
+    -hardware/samsung/hidl/livedisplay \
+    -hardware/samsung/hidl/fastcharge \
+    -hardware/samsung/hidl/touch \
+    -hardware/samsung/hidl/powershare
 
 # SoundTrigger
 PRODUCT_PACKAGES += \
@@ -388,10 +386,6 @@ PRODUCT_COPY_FILES += \
 # Tetheroffload
 PRODUCT_PACKAGES += \
     vendor.samsung_slsi.hardware.tetheroffload@1.1-service
-
-# Touch features
-PRODUCT_PACKAGES += \
-    vendor.lineage.touch-service.samsung
 
 # TUI
 PRODUCT_PACKAGES += \

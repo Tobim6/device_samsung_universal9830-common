@@ -199,6 +199,8 @@ vendor/bin/hw/rild|a506842cc57b8071d7d0230415ac6706d41c11cd
 vendor/lib/libsecril-client.so|478ca085f74ae08f2012ffc06ed7f750cb6e9e15
 vendor/lib/libsemnativecarrierfeature.so|740cfde3e20ce84b6af96ebd1389120d6861e2b1
 vendor/lib64/libril_sem.so|fdd7b3c408386074632c330f3e7b15f7d93b6b97
+vendor/lib64/vendor.samsung.hardware.radio.bridge@2.0.so|be8b1643c70fcb9c31e062bfc7ac771097770b05
+vendor/lib64/vendor.samsung.hardware.radio.bridge@2.1.so|ec704977bae5be3ffde59e1ea6d27f6667ed6bc7
 vendor/lib64/libsec-ril.so|08c353159be03f4ff3aa1d926be4081296124d65|08c353159be03f4ff3aa1d926be4081296124d65
 vendor/lib64/libsecril-client.so|1a13fe10df85adc56b68772b00b16afa5916f878
 vendor/lib64/libsemnativecarrierfeature.so|631de4d92fb314efc04af565960d485068c652ba

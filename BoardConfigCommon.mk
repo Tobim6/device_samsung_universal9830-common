@@ -118,6 +118,9 @@ TARGET_USES_PREBUILT_SECRIL_CLIENT := true
 
 # Camera/scaler/jpeg BSP libs come from stock blobs, not the Make sources
 TARGET_USES_PREBUILT_EXYNOS_BSP_LIBS := true
+
+# libGeoTrans10 is unused and its geoTransService interface is not built from source
+TARGET_EXCLUDES_GEOTRANS := true
 TARGET_BOARD_PLATFORM := universal990
 TARGET_BOOTLOADER_BOARD_NAME := exynos990
 TARGET_SOC := exynos990

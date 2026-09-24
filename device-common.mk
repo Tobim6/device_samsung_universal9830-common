@@ -339,6 +339,17 @@ PRODUCT_PACKAGES += \
 # Shipping API level
 PRODUCT_SHIPPING_API_LEVEL := 29
 
+# These PRODUCT_PACKAGES entries have no matching module in the BSP sources or
+# firmware in this tree (same as the DerpFest tree, which does not enforce
+# existence); allow-list them so PixelOS's package-exists check does not fail.
+PRODUCT_ENFORCE_PACKAGES_EXIST_ALLOW_LIST += \
+    android.hardware.keymaster@4.0-service.samsung \
+    audio.primary.universal990 \
+    cbd \
+    gralloc.universal990 \
+    sound_trigger.primary.universal990 \
+    vendor.samsung_slsi.hardware.tetheroffload@1.1-service
+
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/google/interfaces \

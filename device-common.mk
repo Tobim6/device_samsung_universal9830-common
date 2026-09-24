@@ -347,6 +347,12 @@ PRODUCT_PACKAGES += \
 # Shipping API level
 PRODUCT_SHIPPING_API_LEVEL := 29
 
+# LineageOS-only apps that depend on org.lineageos.platform.internal, which does
+# not exist in a PixelOS tree (SamsungDoze is already dropped from PRODUCT_PACKAGES)
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung/packages/AdvancedDisplay \
+    -hardware/samsung/packages/Doze
+
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/google/interfaces \

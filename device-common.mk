@@ -143,7 +143,9 @@ PRODUCT_PACKAGES += \
 $(call soong_config_set,libinit,vendor_init_lib,//$(LOCAL_PATH):libinit_exynos9830)
 
 # Kernel
-PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := true
+# The Samsung 4.19 kernel ships CONFIG_DEBUG_FS=y, which the FCM level 6 kernel
+# requirements reject; do not fail the build/OTA on that.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
 PRODUCT_ENABLE_UFFD_GC := true
 

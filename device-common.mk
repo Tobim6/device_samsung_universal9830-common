@@ -355,6 +355,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung/packages/AdvancedDisplay \
     -hardware/samsung/packages/Doze
 
+# The vendor repo ships the stock Samsung EDEN blobs (eden_runtime@1.0, its -impl
+# and -service, libeden_nn_on_vendor, libeden_profiler, ...). Upstream's open-source
+# stand-ins define the same module names, which Android 17's Soong rejects
+# ("partition is different: system != vendor"), so keep only the blobs.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung_slsi-linaro/exynos/eden \
+    -hardware/samsung_slsi-linaro/exynos/eden_runtime
+
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/google/interfaces \

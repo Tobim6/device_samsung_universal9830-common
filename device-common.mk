@@ -371,7 +371,8 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung_slsi-linaro/exynos/enn_aux \
     -hardware/samsung_slsi-linaro/exynos/enn_driver \
     -hardware/samsung_slsi-linaro/exynos/enn_saidl_driver \
-    -hardware/samsung/teegris
+    -hardware/samsung/teegris \
+    -hardware/samsung/aidl/gatekeeper/teegris
 
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \

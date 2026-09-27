@@ -123,6 +123,14 @@ PRODUCT_PACKAGES += \
     gralloc.universal990 \
     libion
 
+# SurfaceFlinger's startup shader-cache priming allocates synthetic test
+# buffers (e.g. the hole-punch case) that abort with "output buffer not
+# gpu writeable" against our old Gralloc2 vendor allocator. Priming is a
+# startup-time perf optimization only, not required to boot -- disable it
+# rather than patch vendor buffer-usage semantics.
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    service.sf.prime_shader_cache=false
+
 # Health
 PRODUCT_PACKAGES += \
     android.hardware.health-service.samsung \

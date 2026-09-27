@@ -87,9 +87,6 @@ genfscon sysfs /devices/platform/panel_drv@0/lcd/panel/mask_brightness  u:object
 # MIF
 genfscon sysfs /devices/platform/17000010.devfreq_mif/devfreq/17000010.devfreq_mif/scaling_devfreq_min   u:object_r:sysfs_mif_writable:s0
 
-# NPU
-genfscon sysfs /devices/platform/npu_exynos/version                      u:object_r:sysfs_npu_version:s0
-
 # PCIE
 genfscon sysfs /devices/platform/133b0000.pcie/pcie_sysfs                u:object_r:sysfs_pcie_writable:s0
 

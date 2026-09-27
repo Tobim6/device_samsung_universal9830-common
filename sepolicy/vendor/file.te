@@ -3,7 +3,6 @@
 # data types
 type mediadrm_vendor_data_file, file_type, data_file_type;
 type nfc_vendor_data_file, file_type, data_file_type;
-type vendor_per_boot_file, file_type, data_file_type, core_data_file_type;
 
 # efs types
 type cpdebug_efs_file, fs_type;

@@ -83,10 +83,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     charger_res_images_vendor
 
-# Configstore
-PRODUCT_PACKAGES += \
-    disable_configstore
-
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.3.vendor:32 \
@@ -378,6 +374,8 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/google/interfaces \
     hardware/google/pixel \
+    hardware/google/pixel/power-libperfmgr \
+    hardware/google/pixel/thermal \
     hardware/samsung \
     hardware/samsung_slsi-linaro/exynos/cpboot_v3 \
     hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1 \

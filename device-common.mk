@@ -135,6 +135,19 @@ $(call soong_config_set_bool,libui,legacy_gralloc,true)
 # libion's current default implementation. Also matches lineage-24.0.
 $(call soong_config_set_bool,libion,legacy_impl,true)
 
+# legacy_gralloc fixed hwc3-service.slsi's "gralloc-mapper is missing" abort
+# by restoring the Gralloc2 fallback, but this device's Gralloc2 allocator
+# still can't satisfy the synthetic test buffer SurfaceFlinger's startup
+# shader-cache priming allocates (drawHolePunchLayer), aborting separately
+# with "output buffer not gpu writeable" -- confirmed via a second, later
+# device tombstone (surfaceflinger crash-looping on that abort instead,
+# after the mapper fix took effect). This is a distinct, narrower gap in
+# the same old vendor allocator, not a duplicate of the mapper issue.
+# Priming is a pure startup-time perf optimization, not required to boot;
+# disabling it is AOSP's own sanctioned mitigation for old vendor gralloc.
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    service.sf.prime_shader_cache=false
+
 # Health
 PRODUCT_PACKAGES += \
     android.hardware.health-service.samsung \

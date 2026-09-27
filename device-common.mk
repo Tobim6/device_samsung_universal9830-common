@@ -123,13 +123,17 @@ PRODUCT_PACKAGES += \
     gralloc.universal990 \
     libion
 
-# SurfaceFlinger's startup shader-cache priming allocates synthetic test
-# buffers (e.g. the hole-punch case) that abort with "output buffer not
-# gpu writeable" against our old Gralloc2 vendor allocator. Priming is a
-# startup-time perf optimization only, not required to boot -- disable it
-# rather than patch vendor buffer-usage semantics.
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    service.sf.prime_shader_cache=false
+# This vendor partition only implements Gralloc2 (mapper@2.0-impl-2.1,
+# allocator@2.0). LEGACY_GRALLOC makes libui's requireMapper4() skip the
+# Gralloc4+ requirement unconditionally so GraphicBufferMapper falls back
+# to it instead of aborting with "gralloc-mapper is missing" -- confirmed
+# via device tombstone (hwc3-service.slsi crash-looping on that abort).
+# Matches LineageOS's own lineage-24.0 tree for this device.
+$(call soong_config_set_bool,libui,legacy_gralloc,true)
+
+# Match this old kernel's ION UAPI (ion_legacy.c/include_legacy) instead of
+# libion's current default implementation. Also matches lineage-24.0.
+$(call soong_config_set_bool,libion,legacy_impl,true)
 
 # Health
 PRODUCT_PACKAGES += \
@@ -389,11 +393,6 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1 \
     hardware/samsung_slsi-linaro/exynos/libaudio/sthal \
     hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3
-
-# Framework VINTF matrix for our vendor's real (FCM 6) target-level; A17 no
-# longer ships one, see vintf/Android.bp
-PRODUCT_PACKAGES += \
-    framework_compatibility_matrix.universal9830.6.xml
 
 # SoundTrigger
 PRODUCT_PACKAGES += \

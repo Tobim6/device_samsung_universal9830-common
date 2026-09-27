@@ -1,0 +1,15 @@
+// This device still declares its (accurate) vendor manifest target-level
+// as 6 -- these old Samsung vendor blobs genuinely implement FCM level 6
+// HAL interfaces, not a newer generation. Android 17's own
+// hardware/interfaces/compatibility_matrices no longer ships a level-6
+// framework matrix (dropped after FCM finalization), so we ship our own
+// copy here -- the last valid AOSP compatibility_matrix.6.xml before it
+// was deleted upstream -- rather than falsely bumping our target-level to
+// a generation the vendor partition doesn't actually implement.
+vintf_compatibility_matrix {
+    name: "framework_compatibility_matrix.universal9830.6.xml",
+    stem: "compatibility_matrix.6.xml",
+    srcs: [
+        "compatibility_matrix.6.xml",
+    ],
+}

@@ -382,6 +382,11 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/samsung_slsi-linaro/exynos/libaudio/sthal \
     hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3
 
+# Framework VINTF matrix for our vendor's real (FCM 6) target-level; A17 no
+# longer ships one, see vintf/Android.bp
+PRODUCT_PACKAGES += \
+    framework_compatibility_matrix.universal9830.6.xml
+
 # SoundTrigger
 PRODUCT_PACKAGES += \
     android.hardware.soundtrigger@2.3-impl:32 \

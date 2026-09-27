@@ -37,7 +37,6 @@
 # Camera
 /dev/jsqz                u:object_r:jsqz_device:s0
 /dev/m2m1shot_scaler0    u:object_r:m2m1shot_device:s0
-/dev/vertex10            u:object_r:npu_device:s0
 
 # Fingerprint
 /dev/goodix_fp      u:object_r:fp_sensor_device:s0

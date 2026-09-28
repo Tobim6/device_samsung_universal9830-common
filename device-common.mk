@@ -145,7 +145,14 @@ $(call soong_config_set_bool,libion,legacy_impl,true)
 # the same old vendor allocator, not a duplicate of the mapper issue.
 # Priming is a pure startup-time perf optimization, not required to boot;
 # disabling it is AOSP's own sanctioned mitigation for old vendor gralloc.
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+#
+# PRODUCT_DEFAULT_PROPERTY_OVERRIDES lands this in /vendor/build.prop, but
+# service.sf.* is read by /system/bin/surfaceflinger, a system-partition
+# binary -- confirmed the override had zero effect (identical crash/
+# backtrace after adding it). Use PRODUCT_SYSTEM_DEFAULT_PROPERTIES so it
+# lands in /system/build.prop instead, matching this property's actual
+# partition ownership.
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     service.sf.prime_shader_cache=false
 
 # Health

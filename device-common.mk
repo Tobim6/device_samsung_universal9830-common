@@ -392,19 +392,15 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung_slsi-linaro/exynos/eden_runtime
 
 # Same for the newer ENN runtime sources (enn_driver alone duplicates ~30 of the
-# stock NPU blob modules: libeden_*, libgraphgen_*, libnpuc_*). None of these
-# existed in the Android 16 BSP.
+# stock NPU blob modules: libeden_*, libgraphgen_*, libnpuc_*) and the Teegris
+# stand-in (libteecl). None of these existed in the Android 16 BSP.
 PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung_slsi-linaro/exynos/enn \
     -hardware/samsung_slsi-linaro/exynos/enn_aux \
     -hardware/samsung_slsi-linaro/exynos/enn_driver \
     -hardware/samsung_slsi-linaro/exynos/enn_saidl_driver \
+    -hardware/samsung/teegris \
     -hardware/samsung/aidl/gatekeeper/teegris
-
-# hardware/samsung/teegris (libteecl) was pruned as a duplicate against the old
-# exynos9830-dev vendor blobs' own stand-in. TheMuppets' vendor blobs (now in
-# use, see local_manifests/z3s.xml) don't ship one -- tzts_daemon genuinely
-# needs this upstream source, so keep it.
 
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \

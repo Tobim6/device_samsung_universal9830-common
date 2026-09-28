@@ -101,11 +101,9 @@ PRODUCT_PACKAGES += \
     init.udfps.rc
 
 # Gatekeeper
-# The generic HIDL 1.0 gatekeeper crashes ('Unable to open GateKeeper HAL')
-# against TheMuppets' vendor blobs, which expect the teegris-based AIDL
-# gatekeeper instead -- matches LineageOS's own lineage-24.0 tree.
 PRODUCT_PACKAGES += \
-    android.hardware.gatekeeper-service.teegris
+    android.hardware.gatekeeper@1.0-impl:64 \
+    android.hardware.gatekeeper@1.0-service
 
 # GNSS
 PRODUCT_PACKAGES += \
@@ -400,12 +398,8 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/samsung_slsi-linaro/exynos/enn \
     -hardware/samsung_slsi-linaro/exynos/enn_aux \
     -hardware/samsung_slsi-linaro/exynos/enn_driver \
-    -hardware/samsung_slsi-linaro/exynos/enn_saidl_driver
-
-# hardware/samsung/aidl/gatekeeper/teegris and hardware/samsung/teegris (libteecl)
-# were pruned as duplicates against the old exynos9830-dev vendor blobs' own
-# stand-ins. TheMuppets' vendor blobs (now in use) need both -- see the
-# Gatekeeper section above and the teegris note below.
+    -hardware/samsung_slsi-linaro/exynos/enn_saidl_driver \
+    -hardware/samsung/aidl/gatekeeper/teegris
 
 # hardware/samsung/teegris (libteecl) was pruned as a duplicate against the old
 # exynos9830-dev vendor blobs' own stand-in. TheMuppets' vendor blobs (now in

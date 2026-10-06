@@ -523,3 +523,4 @@ $(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)
 
 # Camera: expose the HAL high fps video modes (hardware/samsung high_fps_video)
 $(call soong_config_set_bool,samsungCameraVars,high_fps_video,true)
+$(call soong_config_set,samsungCameraVars,high_fps_video_exclude_mask,4)

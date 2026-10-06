@@ -520,3 +520,6 @@ PRODUCT_PACKAGES += OpenEUICC
 
 # IMS (VoLTE/VoWiFi), only active when the krazey ImsStack/ImsMedia/CarrierSettings forks are synced
 $(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)
+
+# Camera: expose the HAL high fps video modes (hardware/samsung high_fps_video)
+$(call soong_config_set_bool,samsungCameraVars,high_fps_video,true)

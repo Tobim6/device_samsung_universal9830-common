@@ -1,0 +1,7 @@
+prebuilt_etc {
+    name: "default-permissions_imsstack",
+    system_ext_specific: true,
+    sub_dir: "default-permissions",
+    src: "permissions/default-permissions-imsstack.xml",
+    filename: "default-permissions-imsstack.xml",
+}

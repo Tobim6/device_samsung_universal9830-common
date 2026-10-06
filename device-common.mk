@@ -135,6 +135,16 @@ $(call soong_config_set_bool,libui,legacy_gralloc,true)
 # libion's current default implementation. Also matches lineage-24.0.
 $(call soong_config_set_bool,libion,legacy_impl,true)
 
+# legacy_impl's ion_legacy.c opens /dev/ion directly via the old kernel ION UAPI, but
+# without this policy package /dev/ion is left labeled the generic `device` type, which
+# no domain has explicit read/ioctl rights to -- confirmed via live logcat AVC denial:
+# "avc: denied { read } for comm="BootAnimation" name="ion" ... tcontext=u:object_r:device:s0"
+# (bootanimation runs its full duration unable to allocate any buffer, so nothing ever
+# renders -- black screen with the backlight on, no crash, exits cleanly at boot_completed).
+# This companion package labels /dev/ion as ion_device and grants every domain that needs
+# it (bootanim, surfaceflinger, hal_graphics_allocator, mediaserver, etc.) explicit access.
+$(call inherit-product, device/lineage/sepolicy/libion/sepolicy.mk)
+
 # legacy_gralloc fixed hwc3-service.slsi's "gralloc-mapper is missing" abort
 # by restoring the Gralloc2 fallback, but this device's Gralloc2 allocator
 # still can't satisfy the synthetic test buffer SurfaceFlinger's startup
@@ -241,8 +251,17 @@ PRODUCT_PACKAGES += \
     libtextclassifier_hash.vendor
 
 # NFC
+# TEST: neither open-source community HAL (hardware_samsung_slsi_nfc nor the older
+# hardware_samsung_nfc) can complete a raw Mifare Classic frame exchange -- a frida
+# trace on /dev/sec-nfc traffic showed the exact same generic failure response for
+# every command type (auth, read, even RATS, which a real Classic card never answers),
+# with both HALs, confirming the bug is in their raw-Mifare-interface code itself, not
+# any config value (NFA_PROPRIETARY_CFG is byte-identical to stock's). The one thing
+# confirmed working is Samsung's own real stock binary, extracted from the device's
+# actual stock firmware (AP_extracted) -- wiring that in directly instead of either
+# community reimplementation.
 PRODUCT_PACKAGES += \
-    android.hardware.nfc-service.sec \
+    sec.android.hardware.nfc@1.2-service \
     com.android.nfc_extras \
     Tag
 
@@ -352,6 +371,9 @@ PRODUCT_PACKAGES += \
     secril_config_svc \
     libnetutils.vendor:64 \
     libsqlite.vendor:64 \
+    libsec-ril \
+    libsec-ril-slotswitch \
+    libsec-ril-impl \
     sehradiomanager \
     cbd \
     vendor.samsung.rilchip.slsi.rc
@@ -408,6 +430,7 @@ PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
     hardware/google/pixel \
     hardware/google/pixel/power-libperfmgr \
     hardware/google/pixel/thermal \
+    hardware/google/pixel/pixelstats \
     hardware/samsung \
     hardware/samsung_slsi-linaro/exynos/cpboot_v3 \
     hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1 \
@@ -427,9 +450,21 @@ $(call soong_config_set_bool,exynos_st,use_soundtrigger_hal_2_3,true)
 $(call soong_config_set_bool,exynos_st,use_soundtrigger_hal_mmap,true)
 
 # Thermal
+# pixelatoms-cpp (a direct shared_libs dependency of android.hardware.thermal-service.pixel,
+# confirmed via readelf -d DT_NEEDED) stopped being auto-installed as a transitive dependency
+# once hardware/google/pixel/thermal got its own soong_namespace importing
+# hardware/google/pixel/pixelstats explicitly (needed for the Eden/ENN Soong module-name
+# collision fix above) instead of resolving it through the general hardware/google/pixel
+# namespace like on Android 16. The vendor image ends up missing pixelatoms-cpp.so, so
+# execve() of the thermal-hal binary fails at the dynamic linker stage: no crash, no
+# tombstone (linker failures don't tombstone), process never appears in any ps/ANR
+# snapshot -- confirmed via two live ANR captures where thermal-service.pixel never once
+# showed up while every other HAL did, and system_server's main thread sits forever in
+# AServiceManager_waitForService() waiting for it. List it explicitly so it ships.
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.pixel \
-    thermal_symlinks
+    thermal_symlinks \
+    pixelatoms-cpp
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/thermal_info_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/thermal_info_config.json
@@ -476,3 +511,12 @@ $(call inherit-product, hardware/samsung_slsi-linaro/config/config.mk)
 
 # Call the proprietary setup
 $(call inherit-product, vendor/samsung/universal9830-common/universal9830-common-vendor.mk)
+
+# eSIM: declare eUICC support and ship a privileged LPA
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.telephony.euicc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.euicc.xml
+
+PRODUCT_PACKAGES += OpenEUICC
+
+# IMS (VoLTE/VoWiFi), only active when the krazey ImsStack/ImsMedia/CarrierSettings forks are synced
+$(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)

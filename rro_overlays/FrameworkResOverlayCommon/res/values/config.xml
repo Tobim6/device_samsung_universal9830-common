@@ -42,6 +42,24 @@
     <!-- Indicate whether the SD card is accessible without removing the battery. -->
     <bool name="config_batterySdCardAccessibility">true</bool>
 
+    <!-- Device-specific array of SIM slot indexes which are are embedded eUICCs.
+         e.g. If a device has two physical slots with indexes 0, 1, and slot 1 is an
+         eUICC, then the value of this array should be:
+             <integer-array name="non_removable_euicc_slots">
+                 <item>1</item>
+             </integer-array>
+         If a device has three physical slots and slot 1 and 2 are eUICCs, then the value of
+         this array should be:
+             <integer-array name="non_removable_euicc_slots">
+                <item>1</item>
+                <item>2</item>
+             </integer-array>
+         This is used to differentiate between removable eUICCs and built in eUICCs, and should
+         be set by OEMs for devices which use eUICCs. -->
+    <integer-array name="non_removable_euicc_slots">
+        <item>1</item>
+    </integer-array>
+
     <!-- Is the device capable of hot swapping an UICC Card -->
     <bool name="config_hotswapCapable">true</bool>
 
@@ -224,4 +242,12 @@
          rates are available from hardware composer. Only has an effect if the value is
          non-zero. -->
     <integer name="config_defaultPeakRefreshRate">60</integer>
+    <!-- Optional IPsec algorithms (device launched with API 29; the API 31 mandatory set must be declared).
+         Needs CRYPTO_XCBC, CRYPTO_CTR, CRYPTO_CMAC and CRYPTO_CHACHA20POLY1305 in the kernel. -->
+    <string-array name="config_optionalIpSecAlgorithms" translatable="false">
+        <item>xcbc(aes)</item>
+        <item>rfc3686(ctr(aes))</item>
+        <item>cmac(aes)</item>
+        <item>rfc7539esp(chacha20,poly1305)</item>
+    </string-array>
 </resources>

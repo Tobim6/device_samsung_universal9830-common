@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="config_device_volte_available">true</bool>
+    <bool name="config_device_wfc_ims_available">true</bool>
+    <bool name="config_device_vt_available">false</bool>
+    <!-- IMS voice runs on the AP (ImsMedia/AAudio): MODE_IN_COMMUNICATION instead of MODE_IN_CALL. -->
+    <bool name="config_use_voip_mode_for_ims">true</bool>
+    <string-array name="config_serviceStateLocationAllowedPackages">
+        <item>com.android.imsstack</item>
+        <item>com.android.phone</item>
+    </string-array>
+    <string name="config_wlan_data_service_package" translatable="false">com.google.android.iwlan</string>
+    <string name="config_wlan_network_service_package" translatable="false">com.google.android.iwlan</string>
+    <string name="config_qualified_networks_service_package" translatable="false">com.android.telephony.qns</string>
+</resources>

@@ -4,6 +4,13 @@
 
 /(vendor|system/vendor)/bin/hw/gps.sh       u:object_r:gpsd_exec:s0
 
+# Real stock Samsung NFC HAL binary -- base AOSP's generic file_contexts
+# (system/sepolicy/vendor/file_contexts) only matches the exact names
+# "android.hardware.nfc@1.0/1.1/1.2-service", not this "sec."-prefixed one, so
+# it was falling back to the generic vendor_file label (confirmed via a real
+# ctl.start denial: "File ... has incorrect label or no domain transition").
+/(vendor|system/vendor)/bin/hw/sec\.android\.hardware\.nfc@1\.2-service       u:object_r:hal_nfc_default_exec:s0
+
 ####################################
 # Data Files
 

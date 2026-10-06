@@ -102,3 +102,8 @@ ro.zram.periodic_wb_delay_hours=24
 
 # Zygote
 zygote.critical_window.minute=10
+
+# NFC: required for the real stock sec.android.hardware.nfc@1.2-service.rc
+# trigger ("on property:ro.vendor.nfc.feature.chipname=SLSI") to fire at all --
+# present in stock's own vendor/build.prop, absent from ours otherwise.
+ro.vendor.nfc.feature.chipname=SLSI

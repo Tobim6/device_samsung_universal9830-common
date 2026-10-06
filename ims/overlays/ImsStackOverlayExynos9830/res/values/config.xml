@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bring-up gates. Emergency calls keep using CS/the modem. -->
+    <bool name="config_imsstack_emergency_mmtel_feature">false</bool>
+    <bool name="config_imsstack_rcs_feature">false</bool>
+    <!-- Unknown whether the Samsung IRadioData v2 HAL reports dedicated-bearer QoS.
+         If calls stall waiting for preconditions/QoS, set this to false. -->
+    <bool name="config_imsstack_dedicated_bearer_qos_supported">false</bool>
+</resources>

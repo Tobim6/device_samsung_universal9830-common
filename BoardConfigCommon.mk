@@ -161,3 +161,10 @@ include hardware/samsung_slsi-linaro/config/BoardConfig9830.mk
 
 # Call the proprietary setup
 include vendor/samsung/universal9830-common/BoardConfigVendor.mk
+
+# IMS (ImsStack/ImsMedia) sepolicy, see ims/ims.mk
+ifneq ($(wildcard packages/modules/ImsMedia/sepolicy/system_ext/private/imsmedia.te),)
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += \
+    packages/modules/ImsMedia/sepolicy/system_ext/private \
+    device/samsung/universal9830-common/ims/sepolicy/system_ext/private
+endif

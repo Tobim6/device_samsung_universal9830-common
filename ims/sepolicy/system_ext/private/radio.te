@@ -1,0 +1,2 @@
+# ImsMediaService (phone UID, radio domain) reads cgroup state when it raises RTP/audio thread priority.
+r_dir_file(radio, cgroup)

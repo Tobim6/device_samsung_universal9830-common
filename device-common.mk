@@ -524,3 +524,7 @@ $(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)
 # Camera: expose the HAL high fps video modes (hardware/samsung high_fps_video)
 $(call soong_config_set_bool,samsungCameraVars,high_fps_video,true)
 $(call soong_config_set,samsungCameraVars,high_fps_video_exclude_mask,4)
+
+# WPA3 hotspot on the BCM4375 (in-dongle SAE): needs hostapd with CONFIG_BRCM_SAE AP support
+$(call soong_config_set_bool,wpa_supplicant_8,board_wlan_bcmdhd_sae,true)
+PRODUCT_PACKAGES += WifiOverlayCommon

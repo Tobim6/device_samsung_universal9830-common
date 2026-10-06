@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Wifi driver supports WPA3 SAE for softap. The BCM4375 dongle runs SAE itself; hostapd hands it
+         the password with BRCM_VENDOR_SCMD_BCM_PSK and takes the PMK from BRCM_VENDOR_EVENT_SAE_KEY.
+         Needs the hostapd CONFIG_BRCM_SAE AP-side support (board_wlan_bcmdhd_sae). Without it a WPA3
+         hotspot comes up but no client can finish the handshake. -->
+    <bool translatable="false" name="config_wifi_softap_sae_supported">true</bool>
+</resources>

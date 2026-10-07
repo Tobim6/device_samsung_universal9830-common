@@ -83,6 +83,8 @@
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
          May be less than the minimum allowed brightness setting
          that can be set by the user. -->
+    <!-- AoD follows the room light instead of a fixed level. -->
+    <bool name="config_allowAutoBrightnessWhileDozing">true</bool>
     <integer name="config_screenBrightnessDoze">25</integer>
     <item name="config_screenBrightnessDozeFloat" format="float" type="dimen">0.08627451</item>
 

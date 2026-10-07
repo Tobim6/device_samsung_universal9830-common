@@ -5,4 +5,11 @@
          Needs the hostapd CONFIG_BRCM_SAE AP-side support (board_wlan_bcmdhd_sae). Without it a WPA3
          hotspot comes up but no client can finish the handshake. -->
     <bool translatable="false" name="config_wifi_softap_sae_supported">true</bool>
+
+    <!-- Shared universal9830-family BCM4375 dongle: no 6GHz band support, and the driver does not
+         send NL80211_REG_CHANGED events. Default for any device using this common overlay; z3s/y2s
+         currently also carry their own explicit override to the same effect (same priority-0 RRO,
+         so this is belt-and-suspenders, not redundant for a future device without its own override). -->
+    <bool translatable="false" name="config_wifi6ghzSupport">false</bool>
+    <bool translatable="false" name="config_wifiDriverSupportedNl80211RegChangedEvent">false</bool>
 </resources>

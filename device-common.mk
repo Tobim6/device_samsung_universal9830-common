@@ -251,17 +251,7 @@ PRODUCT_PACKAGES += \
     libtextclassifier_hash.vendor
 
 # NFC
-# TEST: neither open-source community HAL (hardware_samsung_slsi_nfc nor the older
-# hardware_samsung_nfc) can complete a raw Mifare Classic frame exchange -- a frida
-# trace on /dev/sec-nfc traffic showed the exact same generic failure response for
-# every command type (auth, read, even RATS, which a real Classic card never answers),
-# with both HALs, confirming the bug is in their raw-Mifare-interface code itself, not
-# any config value (NFA_PROPRIETARY_CFG is byte-identical to stock's). The one thing
-# confirmed working is Samsung's own real stock binary, extracted from the device's
-# actual stock firmware (AP_extracted) -- wiring that in directly instead of either
-# community reimplementation.
 PRODUCT_PACKAGES += \
-    sec.android.hardware.nfc@1.2-service \
     com.android.nfc_extras \
     Tag
 

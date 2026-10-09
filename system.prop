@@ -1,0 +1,28 @@
+# Audio
+audio.offload.min.duration.secs=30
+
+# Dalvik
+dalvik.vm.dex2oat64.enabled=true
+ro.sys.fw.dex2oat_thread_count=8
+
+# DRM
+drm.service.enabled=true
+
+# Enable CSC for vendor image
+ro.vendor.cscsupported=1
+
+# Fastbootd
+ro.fastbootd.available=true
+
+# FUSE
+persist.sys.fuse.passthrough.enable=true
+
+# HWUI
+debug.hwui.skia_atrace_enabled=false
+
+# RIL
+persist.sys.fflag.override.settings_network_and_internet_v2=false
+ro.debug_level=0x494d
+
+# Samsung
+ro.product_ship=true

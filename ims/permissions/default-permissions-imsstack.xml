@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<exceptions>
+    <exception package="com.android.imsstack">
+        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="false" />
+        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="false" />
+        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="false" />
+        <permission name="android.permission.READ_PHONE_STATE" fixed="false" />
+    </exception>
+</exceptions>

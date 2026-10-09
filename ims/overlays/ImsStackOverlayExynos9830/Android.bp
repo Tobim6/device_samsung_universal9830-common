@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "ImsStackOverlayExynos9830",
+    vendor: true,
+}

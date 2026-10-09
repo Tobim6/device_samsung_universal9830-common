@@ -1,0 +1,5 @@
+# cbd.te
+
+get_prop(cbd, vendor_radio_prop);
+
+allow cbd vendor_radio_prop:property_service set;

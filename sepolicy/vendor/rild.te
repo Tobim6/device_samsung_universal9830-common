@@ -1,0 +1,28 @@
+# rild.te
+
+allow rild {
+    hal_camera_default
+    hal_secure_element_default
+}:dir search;
+
+allow rild {
+    hal_camera_default
+    hal_secure_element_default
+}:file r_file_perms;
+
+allow rild imei_efs_file:file setattr;
+
+allow rild imei_efs_file:file w_file_perms;
+allow rild log_vendor_data_file:dir create_dir_perms;
+allow rild log_vendor_data_file:file create_file_perms;
+
+dontaudit rild default_prop:file { getattr read };
+dontaudit rild default_prop:property_service set;
+dontaudit rild system_prop:file read;
+
+allow rild tun_device:chr_file rw_file_perms;
+allowxperm rild tun_device:chr_file ioctl { 0x54ca 0x54cb };
+allow rild self:tun_socket create;
+
+set_prop(rild, vendor_radio_prop)
+set_prop(rild, radio_prop)

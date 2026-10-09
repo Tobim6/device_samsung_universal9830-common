@@ -1,0 +1,9 @@
+cc_library_shared {
+    name: "libsec-ril-slotswitch",
+    vendor: true,
+    compile_multilib: "64",
+    srcs: ["slotswitch.cpp"],
+    cflags: ["-Wall", "-Wextra", "-Werror", "-fvisibility=hidden"],
+    ldflags: ["-Wl,-z,global"],
+    shared_libs: ["libdl", "liblog"],
+}

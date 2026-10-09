@@ -1,0 +1,533 @@
+#
+# Copyright (C) 2023-2025 The LineageOS Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Enable project quotas and casefolding for emulated storage without sdcardfs
+$(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
+
+# Additional native libraries
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
+
+# Audio
+PRODUCT_PACKAGES += \
+    android.hardware.audio.effect@7.0-impl:32 \
+    android.hardware.audio@7.1-impl:32 \
+    android.hardware.audio.service \
+    android.hardware.bluetooth.audio-impl \
+    audio.bluetooth.default \
+    audio.primary.universal990 \
+    audio.r_submix.default \
+    SamsungDAP
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_board_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_board_info.xml \
+    $(LOCAL_PATH)/configs/audio/mixer_usb_default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_usb_default.xml \
+    $(LOCAL_PATH)/configs/audio/mixer_usb_gray.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_usb_gray.xml \
+    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
+    frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration_7_0.xml \
+    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
+    frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml
+
+TARGET_EXCLUDES_AUDIOFX := true
+
+$(call soong_config_set,exynos_audio,PROXY_LIBRARY,//$(LOCAL_PATH):libaudioproxy)
+$(call soong_config_set,exynos_audio,PREDEFINED_LOW_CAPTURE_DURATION,20)
+$(call soong_config_set,exynos_audio,PREDEFINED_USB_PLAYBACK_DURATION,5)
+$(call soong_config_set_bool,exynos_audio,PREDEFINED_USE_MMAP_HW_VOLUME_CONTROL,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_dynamic_nrec,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_param_update,false)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_resampler,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_samsungrecord,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_sound_trigger_enabled,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_sec_audio_support_listenback_dspeffect,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_soundtrigger_hal,true)
+$(call soong_config_set_bool,universal9830AudioVars,use_usb_offload,true)
+
+# Boot animation
+TARGET_BOOTANIMATION_PRELOAD := true
+TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+
+# Camera
+PRODUCT_PACKAGES += \
+    android.hardware.camera.provider-service.samsung \
+    android.hardware.thermal@2.0.vendor \
+    libGrallocMapperCamera \
+    libhwjpeg \
+    libsensorndkbridge \
+    libutilscallstack.vendor
+
+$(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
+
+# Cgroup and task_profiles
+PRODUCT_COPY_FILES += \
+    system/core/libprocessgroup/profiles/cgroups_29.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json \
+    system/core/libprocessgroup/profiles/task_profiles_29.json:$(TARGET_COPY_OUT_VENDOR)/etc/task_profiles.json
+
+# Charger
+PRODUCT_PACKAGES += \
+    charger_res_images_vendor
+
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.3.vendor:32 \
+    android.hardware.drm-service.clearkey
+
+# Dynamic Partitions
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
+
+# Fastbootd
+PRODUCT_PACKAGES += \
+    fastbootd
+
+# Fingerprint
+PRODUCT_PACKAGES += \
+    android.hardware.biometrics.fingerprint-service.samsung \
+    init.udfps.rc
+
+# Gatekeeper
+PRODUCT_PACKAGES += \
+    android.hardware.gatekeeper@1.0-impl:64 \
+    android.hardware.gatekeeper@1.0-service
+
+# GNSS
+PRODUCT_PACKAGES += \
+    android.frameworks.sensorservice@1.0.vendor:64 \
+    android.hardware.gnss@2.1.vendor:64 \
+    init.gps.rc
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/gps/gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/gnss/gps.xml
+
+# Graphics
+PRODUCT_PACKAGES += \
+    android.hardware.composer.hwc3-service.slsi \
+    android.hardware.graphics.allocator@2.0-impl:64 \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.mapper@2.0-impl-2.1 \
+    gralloc.universal990 \
+    libion
+
+# This vendor partition only implements Gralloc2 (mapper@2.0-impl-2.1,
+# allocator@2.0). LEGACY_GRALLOC makes libui's requireMapper4() skip the
+# Gralloc4+ requirement unconditionally so GraphicBufferMapper falls back
+# to it instead of aborting with "gralloc-mapper is missing" -- confirmed
+# via device tombstone (hwc3-service.slsi crash-looping on that abort).
+# Matches LineageOS's own lineage-24.0 tree for this device.
+$(call soong_config_set_bool,libui,legacy_gralloc,true)
+
+# Match this old kernel's ION UAPI (ion_legacy.c/include_legacy) instead of
+# libion's current default implementation. Also matches lineage-24.0.
+$(call soong_config_set_bool,libion,legacy_impl,true)
+
+# MediaCodec::connectToSurface's disconnect/reconnect HACK (to clear stale free
+# buffers) resets the surface's local generation number as a side effect; without
+# this flag it's never restored, so a later ACodec::handleSetSurface tries to
+# attachBuffer() output buffers still stamped with the OLD generation onto a
+# surface whose BufferQueueProducer now expects the new one, and the kernel/HAL's
+# legacy OMX video decoder path (no Codec2 HAL on this device, see media_codecs.xml)
+# keeps those buffers alive across the switch instead of redequeuing fresh ones --
+# confirmed via logcat: "BufferQueueProducer: attachBuffer: generation number
+# mismatch [buffer 0] [queue <N>]" / "ACodec: failed to attach buffer ... Invalid
+# argument (22)", crashing any player that swaps output surfaces mid-playback
+# (e.g. ExoPlayer-based apps recreating their SurfaceView right after codec start).
+$(call soong_config_set_bool,stagefright,target_restore_surface_generation_after_reconnect,true)
+
+# legacy_impl's ion_legacy.c opens /dev/ion directly via the old kernel ION UAPI, but
+# without this policy package /dev/ion is left labeled the generic `device` type, which
+# no domain has explicit read/ioctl rights to -- confirmed via live logcat AVC denial:
+# "avc: denied { read } for comm="BootAnimation" name="ion" ... tcontext=u:object_r:device:s0"
+# (bootanimation runs its full duration unable to allocate any buffer, so nothing ever
+# renders -- black screen with the backlight on, no crash, exits cleanly at boot_completed).
+# This companion package labels /dev/ion as ion_device and grants every domain that needs
+# it (bootanim, surfaceflinger, hal_graphics_allocator, mediaserver, etc.) explicit access.
+$(call inherit-product, device/lineage/sepolicy/libion/sepolicy.mk)
+
+# legacy_gralloc fixed hwc3-service.slsi's "gralloc-mapper is missing" abort
+# by restoring the Gralloc2 fallback, but this device's Gralloc2 allocator
+# still can't satisfy the synthetic test buffer SurfaceFlinger's startup
+# shader-cache priming allocates (drawHolePunchLayer), aborting separately
+# with "output buffer not gpu writeable" -- confirmed via a second, later
+# device tombstone (surfaceflinger crash-looping on that abort instead,
+# after the mapper fix took effect). This is a distinct, narrower gap in
+# the same old vendor allocator, not a duplicate of the mapper issue.
+# Priming is a pure startup-time perf optimization, not required to boot;
+# disabling it is AOSP's own sanctioned mitigation for old vendor gralloc.
+#
+# PRODUCT_DEFAULT_PROPERTY_OVERRIDES lands this in /vendor/build.prop, but
+# service.sf.* is read by /system/bin/surfaceflinger, a system-partition
+# binary -- confirmed the override had zero effect (identical crash/
+# backtrace after adding it). Use PRODUCT_SYSTEM_DEFAULT_PROPERTIES so it
+# lands in /system/build.prop instead, matching this property's actual
+# partition ownership.
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    service.sf.prime_shader_cache=false
+
+# Health
+PRODUCT_PACKAGES += \
+    android.hardware.health-service.samsung \
+    android.hardware.health-service.samsung-recovery
+
+# Init
+PRODUCT_PACKAGES += \
+    fstab.exynos990 \
+    fstab.exynos990.ramdisk \
+    init.exynos990.rc.recovery \
+    init.exynos990.rc \
+    ueventd.exynos990.rc
+
+$(call soong_config_set,libinit,vendor_init_lib,//$(LOCAL_PATH):libinit_exynos9830)
+
+# Kernel
+# The Samsung 4.19 kernel ships CONFIG_DEBUG_FS=y, which the FCM level 6 kernel
+# requirements reject; do not fail the build/OTA on that.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
+PRODUCT_ENABLE_UFFD_GC := true
+
+# Keylayouts
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/keylayout/sec_touchscreen.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/sec_touchscreen.kl
+
+# Keymaster
+PRODUCT_PACKAGES += \
+    android.hardware.keymaster@4.0-service.samsung \
+    libkeymaster4_1support.vendor:64
+
+$(call soong_config_set,samsungVars,target_keymaster4_library,//vendor/samsung/universal9830-common:libskeymaster4device)
+
+# Lineage Health
+PRODUCT_PACKAGES += \
+    vendor.lineage.health-service.default
+
+$(call soong_config_set,lineage_health,charging_control_charging_path,/sys/class/power_supply/battery/charging_enabled)
+$(call soong_config_set,lineage_health,charging_control_charging_enabled,1)
+$(call soong_config_set,lineage_health,charging_control_charging_disabled,0)
+$(call soong_config_set_bool,lineage_health,charging_control_charging_bypass,true)
+$(call soong_config_set_bool,lineage_health,charging_control_charging_toggle,true)
+$(call soong_config_set_bool,lineage_health,charging_control_charging_deadline,false)
+$(call soong_config_set,lineage_health,fast_charge_node,/sys/class/sec/switch/afc_disable)
+$(call soong_config_set,lineage_health,fast_charge_value_none,1)
+$(call soong_config_set,lineage_health,fast_charge_value_fast_charge,0)
+
+# Livedisplay
+PRODUCT_PACKAGES += \
+    vendor.lineage.livedisplay-service.samsung-exynos
+
+# Media
+PRODUCT_PACKAGES += \
+    libExynosOMX_Core \
+    libExynosOMX_Resourcemanager \
+    libOMX.Exynos.AVC.Decoder \
+    libOMX.Exynos.AVC.Encoder \
+    libOMX.Exynos.AVC.WFD.Encoder \
+    libOMX.Exynos.HEVC.Decoder \
+    libOMX.Exynos.HEVC.Encoder \
+    libOMX.Exynos.HEVC.WFD.Encoder \
+    libOMX.Exynos.MPEG4.Decoder \
+    libOMX.Exynos.MPEG4.Encoder \
+    libOMX.Exynos.VP8.Decoder \
+    libOMX.Exynos.VP8.Encoder \
+    libOMX.Exynos.VP9.Decoder \
+    libOMX.Exynos.VP9.Encoder \
+    libOMX.Exynos.WMV.Decoder \
+    libstagefrighthw
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
+    $(LOCAL_PATH)/configs/media/media_profiles_V1_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml \
+    $(LOCAL_PATH)/configs/media/media_codecs_performance.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance.xml
+
+# Memtrack
+PRODUCT_PACKAGES += \
+    android.hardware.memtrack-service.samsung-mali
+
+# Neuralnetworks
+PRODUCT_PACKAGES += \
+    android.hardware.neuralnetworks@1.3.vendor \
+    android.hidl.allocator@1.0.vendor \
+    libtextclassifier_hash.vendor
+
+# NFC
+PRODUCT_PACKAGES += \
+    com.android.nfc_extras \
+    Tag
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/nfc/libnfc-nci.conf:$(TARGET_COPY_OUT_PRODUCT)/etc/libnfc-nci.conf \
+    $(LOCAL_PATH)/configs/nfc/nfcee_access.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/nfcee_access.xml
+
+# Overlays
+PRODUCT_PACKAGES += \
+    ApertureOverlayCommon \
+    FrameworkResOverlayCommon \
+    LineageSDKOverlayCommon \
+    SettingsOverlayCommon \
+    SystemUIOverlayCommon
+
+PRODUCT_ENFORCE_RRO_TARGETS := *
+
+# Permissions
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
+    frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
+    frameworks/native/data/etc/android.hardware.camera.ar.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.ar.xml \
+    frameworks/native/data/etc/android.hardware.camera.autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.autofocus.xml \
+    frameworks/native/data/etc/android.hardware.camera.concurrent.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.concurrent.xml \
+    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
+    frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
+    frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
+    frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml \
+    frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml \
+    frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml \
+    frameworks/native/data/etc/android.hardware.nfc.ese.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.ese.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hcef.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hcef.xml \
+    frameworks/native/data/etc/android.hardware.nfc.uicc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.uicc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
+    frameworks/native/data/etc/android.hardware.se.omapi.ese.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.se.omapi.ese.xml \
+    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.barometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.barometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
+    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/native/data/etc/android.hardware.sensor.hifi_sensors.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.hifi_sensors.xml \
+    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
+    frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
+    frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml \
+    frameworks/native/data/etc/android.hardware.strongbox_keystore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.strongbox_keystore.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.level-1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml \
+    frameworks/native/data/etc/android.hardware.wifi.aware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.aware.xml \
+    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
+    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.software.app_widgets.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.app_widgets.xml \
+    frameworks/native/data/etc/android.software.freeform_window_management.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.freeform_window_management.xml \
+    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml \
+    frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
+    frameworks/native/data/etc/android.software.opengles.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
+    frameworks/native/data/etc/android.software.picture_in_picture.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.picture_in_picture.xml \
+    frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
+    frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml \
+    frameworks/native/data/etc/android.software.vulkan.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
+    frameworks/native/data/etc/com.android.nfc_extras.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.android.nfc_extras.xml \
+    frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
+
+# Power
+PRODUCT_PACKAGES += \
+    android.hardware.power@1.0.vendor:64 \
+    android.hardware.power-service.pixel-libperfmgr
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
+
+# PowerShare
+PRODUCT_PACKAGES += \
+    vendor.lineage.powershare-service.samsung
+
+# Recovery
+PRODUCT_PACKAGES += \
+    init.recovery.exynos990.rc
+
+# Protobuf
+PRODUCT_PACKAGES += \
+    libprotobuf-cpp-full-3.9.1-vendorcompat
+
+# RIL
+PRODUCT_PACKAGES += \
+    android.hardware.radio@1.2.vendor:64 \
+    android.hardware.radio.config-V1-ndk.vendor:64 \
+    android.hardware.radio.data-V1-ndk.vendor:64 \
+    android.hardware.radio.messaging-V1-ndk.vendor:64 \
+    android.hardware.radio.modem-V1-ndk.vendor:64 \
+    android.hardware.radio.network-V1-ndk.vendor:64 \
+    android.hardware.radio.sim-V1-ndk.vendor:64 \
+    android.hardware.radio.voice-V1-ndk.vendor:64 \
+    init.baseband.rc \
+    init.vendor.rilcommon.rc \
+    libdsms_vendor:64 \
+    secril_config_svc \
+    libnetutils.vendor:64 \
+    libsqlite.vendor:64 \
+    libsec-ril \
+    libsec-ril-slotswitch \
+    libsec-ril-impl \
+    sehradiomanager \
+    cbd \
+    vendor.samsung.rilchip.slsi.rc
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/ril/sehradiomanager.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sehradiomanager.conf
+
+$(call soong_config_set,cbd,protocol,sipc)
+
+# Secure Element
+PRODUCT_PACKAGES += \
+    android.hardware.secure_element-service.thales
+
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.contexthub@1.0.vendor:64 \
+    android.hardware.sensors-service.samsung-multihal
+
+# Shims
+PRODUCT_PACKAGES += \
+    libsensorndkbridge_shim
+
+# Shipping API level
+PRODUCT_SHIPPING_API_LEVEL := 29
+
+# LineageOS-only apps that depend on org.lineageos.platform.internal, which does
+# not exist in a PixelOS tree (SamsungDoze is already dropped from PRODUCT_PACKAGES)
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung/packages/AdvancedDisplay \
+    -hardware/samsung/packages/Doze
+
+# The vendor repo ships the stock Samsung EDEN blobs (eden_runtime@1.0, its -impl
+# and -service, libeden_nn_on_vendor, libeden_profiler, ...). Upstream's open-source
+# stand-ins define the same module names, which Android 17's Soong rejects
+# ("partition is different: system != vendor"), so keep only the blobs.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung_slsi-linaro/exynos/eden \
+    -hardware/samsung_slsi-linaro/exynos/eden_runtime
+
+# Same for the newer ENN runtime sources (enn_driver alone duplicates ~30 of the
+# stock NPU blob modules: libeden_*, libgraphgen_*, libnpuc_*) and the Teegris
+# stand-in (libteecl). None of these existed in the Android 16 BSP.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/samsung_slsi-linaro/exynos/enn \
+    -hardware/samsung_slsi-linaro/exynos/enn_aux \
+    -hardware/samsung_slsi-linaro/exynos/enn_driver \
+    -hardware/samsung_slsi-linaro/exynos/enn_saidl_driver \
+    -hardware/samsung/teegris \
+    -hardware/samsung/aidl/gatekeeper/teegris
+
+# Soong namespace
+PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH) \
+    hardware/google/interfaces \
+    hardware/google/pixel \
+    hardware/google/pixel/power-libperfmgr \
+    hardware/google/pixel/thermal \
+    hardware/google/pixel/pixelstats \
+    hardware/samsung \
+    hardware/samsung_slsi-linaro/exynos/cpboot_v3 \
+    hardware/samsung_slsi-linaro/exynos/libaudio/audiohal_comv1 \
+    hardware/samsung_slsi-linaro/exynos/libaudio/sthal \
+    hardware/samsung_slsi-linaro/exynos/gralloc/gralloc3
+
+# SoundTrigger
+PRODUCT_PACKAGES += \
+    android.hardware.soundtrigger@2.3-impl:32 \
+    sound_trigger.primary.universal990
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/permissions/privapp-permissions-hotword.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-hotword.xml
+
+$(call soong_config_set,exynos_st,soundtrigger_config_path,$(LOCAL_PATH)/configs/sthal)
+$(call soong_config_set_bool,exynos_st,use_soundtrigger_hal_2_3,true)
+$(call soong_config_set_bool,exynos_st,use_soundtrigger_hal_mmap,true)
+
+# Thermal
+# pixelatoms-cpp (a direct shared_libs dependency of android.hardware.thermal-service.pixel,
+# confirmed via readelf -d DT_NEEDED) stopped being auto-installed as a transitive dependency
+# once hardware/google/pixel/thermal got its own soong_namespace importing
+# hardware/google/pixel/pixelstats explicitly (needed for the Eden/ENN Soong module-name
+# collision fix above) instead of resolving it through the general hardware/google/pixel
+# namespace like on Android 16. The vendor image ends up missing pixelatoms-cpp.so, so
+# execve() of the thermal-hal binary fails at the dynamic linker stage: no crash, no
+# tombstone (linker failures don't tombstone), process never appears in any ps/ANR
+# snapshot -- confirmed via two live ANR captures where thermal-service.pixel never once
+# showed up while every other HAL did, and system_server's main thread sits forever in
+# AServiceManager_waitForService() waiting for it. List it explicitly so it ships.
+PRODUCT_PACKAGES += \
+    android.hardware.thermal-service.pixel \
+    thermal_symlinks \
+    pixelatoms-cpp
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal/thermal_info_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/thermal_info_config.json
+
+# Tetheroffload
+PRODUCT_PACKAGES += \
+    vendor.samsung_slsi.hardware.tetheroffload@1.1-service
+
+# Touch features
+PRODUCT_PACKAGES += \
+    vendor.lineage.touch-service.samsung
+
+# TUI
+PRODUCT_PACKAGES += \
+    teegris_v4.rc
+
+# Update
+AB_OTA_UPDATER := false
+PRODUCT_SOONG_NAMESPACES += bootable/deprecated-ota
+
+# USB
+PRODUCT_PACKAGES += \
+    android.hardware.usb-service.samsung \
+    android.hardware.usb.gadget-service.samsung \
+    init.exynos990.usb.rc
+
+$(call soong_config_set,samsungUsbGadgetVars,gadget_name,10e00000.dwc3)
+
+# Vibrator
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator-service.samsung
+
+# VNDK
+PRODUCT_PACKAGES += \
+    libutils-v32
+
+# Setup dalvik vm configs
+$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
+
+# Call Samsung LSI board support package makefiles
+include hardware/samsung_slsi-linaro/config/BoardConfig9830.mk
+$(call inherit-product, hardware/samsung_slsi-linaro/graphics/base/hwcomposer_property.mk)
+$(call inherit-product, hardware/samsung_slsi-linaro/config/config.mk)
+
+# Call the proprietary setup
+$(call inherit-product, vendor/samsung/universal9830-common/universal9830-common-vendor.mk)
+
+# eSIM: declare eUICC support and ship a privileged LPA
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.telephony.euicc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.euicc.xml
+
+PRODUCT_PACKAGES += OpenEUICC
+
+# IMS (VoLTE/VoWiFi), only active when the krazey ImsStack/ImsMedia/CarrierSettings forks are synced
+$(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)
+
+# Camera: expose the HAL high fps video modes (hardware/samsung high_fps_video)
+$(call soong_config_set_bool,samsungCameraVars,high_fps_video,true)
+$(call soong_config_set,samsungCameraVars,high_fps_video_exclude_mask,4)
+
+# WPA3 hotspot on the BCM4375 (in-dongle SAE): needs hostapd with CONFIG_BRCM_SAE AP support
+$(call soong_config_set_bool,wpa_supplicant_8,board_wlan_bcmdhd_sae,true)
+PRODUCT_PACKAGES += WifiOverlayCommon

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Enable auxiliary cameras selector. -->
+    <bool name="config_enableAuxCameras">true</bool>
+    <!-- Camera 2 (ultrawide): the HAL cannot start its 60 fps sensor mode (FLITE setFormat fails and
+         the camera provider aborts), so only offer 30 fps there. -->
+    <string-array name="config_additionalVideoConfigurations">
+        <item>2</item> <item>sd|hd|fhd|uhd</item> <item>-60</item>
+    </string-array>
+    <!-- Hide auxiliary camera 3 (front 1.2x lens). -->
+    <string-array name="config_ignoredAuxCameraIds">
+        <item>3</item>
+    </string-array>
+</resources>

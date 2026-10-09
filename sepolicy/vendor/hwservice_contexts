@@ -1,0 +1,8 @@
+# A2DP Offload
+vendor.samsung_slsi.hardware.ExynosA2DPOffload::IExynosA2DPOffload    u:object_r:hal_vendor_a2dpoffload_hwservice:s0
+
+# Bluetooth
+vendor.samsung.hardware.bluetooth::ISehBluetooth                      u:object_r:hal_bluetooth_hwservice:s0
+
+# GNSS
+vendor.samsung.hardware.gnss::ISehGnss                                u:object_r:hal_gnss_hwservice:s0

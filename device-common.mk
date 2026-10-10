@@ -135,6 +135,19 @@ $(call soong_config_set_bool,libui,legacy_gralloc,true)
 # libion's current default implementation. Also matches lineage-24.0.
 $(call soong_config_set_bool,libion,legacy_impl,true)
 
+# MediaCodec::connectToSurface's disconnect/reconnect HACK (to clear stale free
+# buffers) resets the surface's local generation number as a side effect; without
+# this flag it's never restored, so a later ACodec::handleSetSurface tries to
+# attachBuffer() output buffers still stamped with the OLD generation onto a
+# surface whose BufferQueueProducer now expects the new one, and the kernel/HAL's
+# legacy OMX video decoder path (no Codec2 HAL on this device, see media_codecs.xml)
+# keeps those buffers alive across the switch instead of redequeuing fresh ones --
+# confirmed via logcat: "BufferQueueProducer: attachBuffer: generation number
+# mismatch [buffer 0] [queue <N>]" / "ACodec: failed to attach buffer ... Invalid
+# argument (22)", crashing any player that swaps output surfaces mid-playback
+# (e.g. ExoPlayer-based apps recreating their SurfaceView right after codec start).
+$(call soong_config_set_bool,stagefright,target_restore_surface_generation_after_reconnect,true)
+
 # legacy_impl's ion_legacy.c opens /dev/ion directly via the old kernel ION UAPI, but
 # without this policy package /dev/ion is left labeled the generic `device` type, which
 # no domain has explicit read/ioctl rights to -- confirmed via live logcat AVC denial:

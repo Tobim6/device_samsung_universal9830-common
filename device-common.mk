@@ -252,6 +252,7 @@ PRODUCT_PACKAGES += \
 
 # NFC
 PRODUCT_PACKAGES += \
+    android.hardware.nfc-service.sec \
     com.android.nfc_extras \
     Tag
 

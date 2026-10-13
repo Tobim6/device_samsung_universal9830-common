@@ -74,18 +74,16 @@ PRODUCT_PACKAGES += \
 
 $(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
 
-# Excludes Aperture via LineageOS's own PRODUCT_NO_CAMERA opt-out flag in
-# vendor/lineage/config/common_mobile_full.mk (a plain scalar var checked
-# with a normal ifneq, not a PRODUCT_PACKAGES list entry -- unlike list
-# vars, this isn't subject to inherit-product's lazy, whole-graph-deferred
-# resolution, so setting it here, before common_full_phone.mk is ever
-# inherited, reliably takes effect).
-PRODUCT_NO_CAMERA := true
-
-# BSG GCam (replaces Aperture as the default camera app and photo/video
-# capture handler -- it already declares intent-filters for
-# android.media.action.IMAGE_CAPTURE/VIDEO_CAPTURE/STILL_IMAGE_CAMERA, so
-# it ends up as the sole handler, auto-selected with no app picker.
+# BSG GCam is the standalone, home-screen-visible camera app. Aperture
+# stays installed too (LineageOS's PRODUCT_NO_CAMERA opt-out flag, used
+# earlier to drop it, is NOT set here) -- GCam's own delegated-capture
+# handling (what other apps get when they ask for a photo, e.g. Discord's
+# "take photo") is unreliable, so Aperture is kept as a hidden-from-
+# launcher fallback and made the preferred handler for that instead; see
+# packages/apps/Aperture's own z3s-local branch (app_name renamed to
+# "Aperture", not just "Camera" like GCam, and the LAUNCHER category
+# dropped from its CameraLauncher alias) and preferred-apps/aperture.xml
+# below.
 #
 # Deliberately NOT a PRODUCT_PACKAGES/android_app_import system app.
 # BSGGCam ships genuinely compressed JNI libraries, and
@@ -104,6 +102,16 @@ PRODUCT_NO_CAMERA := true
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/gcam/BSGGCam.apk:$(TARGET_COPY_OUT_VENDOR)/etc/gcam/BSGGCam.apk \
     $(LOCAL_PATH)/configs/init/gcam_install.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/gcam_install.rc
+
+# Makes Aperture (not GCam) the preferred resolution for IMAGE_CAPTURE/
+# VIDEO_CAPTURE requests delegated from other apps, without the user
+# ever seeing an app-picker prompt. PackageManagerService loads any
+# *.xml dropped under etc/preferred-apps on every scanned partition at
+# boot (frameworks/base's Settings.applyDefaultPreferredAppsLPw(); see
+# vendor/pixel/gms/common's own preferred-apps/google.xml for the same
+# mechanism already used elsewhere in this tree).
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/preferred-apps/aperture.xml:$(TARGET_COPY_OUT_VENDOR)/etc/preferred-apps/aperture.xml
 
 # Cgroup and task_profiles
 PRODUCT_COPY_FILES += \

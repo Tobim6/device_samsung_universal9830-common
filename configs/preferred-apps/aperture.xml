@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<!--
+    Makes Aperture the preferred handler for photo/video capture requests
+    delegated from other apps (e.g. Discord's "take photo" attachment
+    button), instead of BSG GCam -- GCam's own delegated-capture handling
+    is unreliable, so Aperture (hidden from the launcher, not meant to be
+    opened directly) is kept around specifically for this. Does not cover
+    STILL_IMAGE_CAMERA/VIDEO_CAMERA (launching the camera directly in
+    capture mode, e.g. a camera button): GCam remains the standalone app
+    for that and for being opened from the home screen.
+
+    Format: see vendor/pixel/gms/common's own preferred-apps/google.xml
+    for the same mechanism already used elsewhere in this tree, or
+    "adb shell dumpsys package preferred-xml" to regenerate from a live
+    resolution.
+-->
+<preferred-activities>
+    <item name="org.lineageos.aperture/.CaptureActivity">
+        <filter>
+            <action name="android.media.action.IMAGE_CAPTURE" />
+            <cat name="android.intent.category.DEFAULT" />
+        </filter>
+    </item>
+    <item name="org.lineageos.aperture/.SecureCameraActivity">
+        <filter>
+            <action name="android.media.action.IMAGE_CAPTURE_SECURE" />
+            <cat name="android.intent.category.DEFAULT" />
+        </filter>
+    </item>
+    <item name="org.lineageos.aperture/.VideoCamera">
+        <filter>
+            <action name="android.media.action.VIDEO_CAPTURE" />
+            <cat name="android.intent.category.DEFAULT" />
+        </filter>
+    </item>
+</preferred-activities>

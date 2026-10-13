@@ -11,6 +11,10 @@ android_app_import {
     // targetSdkVersion 35 means this APK must be v2-signed; preprocessed
     // tells Soong not to touch (and so not wreck) that existing signature.
     preprocessed: true,
+    // The real-world APK genuinely ships compressed JNI libraries (common
+    // for non-Pixel GCam ports), which the preprocessed-apk check would
+    // otherwise fail on.
+    skip_preprocessed_apk_checks: true,
     dex_preopt: {
         enabled: false,
     },

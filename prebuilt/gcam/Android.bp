@@ -8,6 +8,9 @@ android_app_import {
     name: "BSGGCam",
     apk: "BSGGCam.apk",
     presigned: true,
+    // targetSdkVersion 35 means this APK must be v2-signed; preprocessed
+    // tells Soong not to touch (and so not wreck) that existing signature.
+    preprocessed: true,
     dex_preopt: {
         enabled: false,
     },

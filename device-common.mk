@@ -74,6 +74,23 @@ PRODUCT_PACKAGES += \
 
 $(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
 
+# BSG GCam (replaces Aperture as the default camera app and photo/video
+# capture handler -- it already declares intent-filters for
+# android.media.action.IMAGE_CAPTURE/VIDEO_CAPTURE/STILL_IMAGE_CAMERA, so
+# it ends up as the sole handler, auto-selected with no app picker.
+# Excludes Aperture via the "overrides" property in its Android.bp
+# (prebuilt/gcam/Android.bp) rather than removing it from PRODUCT_PACKAGES
+# here or in custom_<device>.mk: PRODUCT_PACKAGES list membership is
+# resolved lazily across the whole inherit-product graph (each inherit
+# just records an opaque tag, expanded in a later pass), so a textual
+# $(filter-out ...) placed after the inherit that adds Aperture never
+# actually sees "Aperture" in the list -- confirmed via get_build_var.
+# Soong's overrides mechanism (see e.g. packages/apps/DolbyAtmos overriding
+# MusicFX/AudioFX) operates on the install graph instead and isn't subject
+# to that ordering problem.
+PRODUCT_PACKAGES += \
+    BSGGCam
+
 # Cgroup and task_profiles
 PRODUCT_COPY_FILES += \
     system/core/libprocessgroup/profiles/cgroups_29.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json \
@@ -275,7 +292,6 @@ PRODUCT_COPY_FILES += \
 
 # Overlays
 PRODUCT_PACKAGES += \
-    ApertureOverlayCommon \
     FrameworkResOverlayCommon \
     LineageSDKOverlayCommon \
     SettingsOverlayCommon \
@@ -528,6 +544,7 @@ $(call inherit-product, device/samsung/universal9830-common/ims/ims.mk)
 # Camera: expose the HAL high fps video modes (hardware/samsung high_fps_video)
 $(call soong_config_set_bool,samsungCameraVars,high_fps_video,true)
 $(call soong_config_set,samsungCameraVars,high_fps_video_exclude_mask,4)
+$(call soong_config_set,samsungCameraVars,high_fps_video_client,2)
 
 # WPA3 hotspot on the BCM4375 (in-dongle SAE): needs hostapd with CONFIG_BRCM_SAE AP support
 $(call soong_config_set_bool,wpa_supplicant_8,board_wlan_bcmdhd_sae,true)

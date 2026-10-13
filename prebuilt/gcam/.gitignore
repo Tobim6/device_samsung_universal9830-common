@@ -1,0 +1,6 @@
+
+# BSGGCam.apk is 342MB -- well over GitHub's 100MB-per-file push limit
+# without Git LFS. Keep it local-only; the build just needs it present on
+# disk at this path, it doesn't need to be tracked in git. See the commit
+# that added this directory for where to re-download it from.
+BSGGCam.apk

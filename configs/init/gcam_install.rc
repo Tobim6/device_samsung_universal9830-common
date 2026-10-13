@@ -1,0 +1,16 @@
+# Installs BSG GCam from its reference copy on /vendor the same way a
+# normal sideloaded app would be installed -- a single copy into /data,
+# extracted native libs included as part of that same install, no
+# separate system-partition copy. See device-common.mk's Camera section
+# for why this isn't done via PRODUCT_PACKAGES/android_app_import
+# instead (PackageManagerService never extracts native libs for a
+# preloaded system app that was never "updated", and this apk's own
+# app-protection code rules out a reinstall-over-itself-via-/system
+# workaround that would duplicate the apk's storage on top of that).
+#
+# Safe/cheap to repeat every boot: `pm install -r` over an already
+# up-to-date install is a quick no-op, and this is what keeps the app
+# present again after a factory reset (the reference copy on /vendor
+# survives that; /data does not).
+on property:sys.boot_completed=1
+    exec_background - system system -- /system/bin/pm install -r /vendor/etc/gcam/BSGGCam.apk

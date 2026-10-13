@@ -74,32 +74,36 @@ PRODUCT_PACKAGES += \
 
 $(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
 
+# Excludes Aperture via LineageOS's own PRODUCT_NO_CAMERA opt-out flag in
+# vendor/lineage/config/common_mobile_full.mk (a plain scalar var checked
+# with a normal ifneq, not a PRODUCT_PACKAGES list entry -- unlike list
+# vars, this isn't subject to inherit-product's lazy, whole-graph-deferred
+# resolution, so setting it here, before common_full_phone.mk is ever
+# inherited, reliably takes effect).
+PRODUCT_NO_CAMERA := true
+
 # BSG GCam (replaces Aperture as the default camera app and photo/video
 # capture handler -- it already declares intent-filters for
 # android.media.action.IMAGE_CAPTURE/VIDEO_CAPTURE/STILL_IMAGE_CAMERA, so
 # it ends up as the sole handler, auto-selected with no app picker.
-# Excludes Aperture via the "overrides" property in its Android.bp
-# (prebuilt/gcam/Android.bp) rather than removing it from PRODUCT_PACKAGES
-# here or in custom_<device>.mk: PRODUCT_PACKAGES list membership is
-# resolved lazily across the whole inherit-product graph (each inherit
-# just records an opaque tag, expanded in a later pass), so a textual
-# $(filter-out ...) placed after the inherit that adds Aperture never
-# actually sees "Aperture" in the list -- confirmed via get_build_var.
-# Soong's overrides mechanism (see e.g. packages/apps/DolbyAtmos overriding
-# MusicFX/AudioFX) operates on the install graph instead and isn't subject
-# to that ordering problem.
-PRODUCT_PACKAGES += \
-    BSGGCam
-
-# BSGGCam ships genuinely compressed JNI libraries; PackageManagerService
-# never extracts native libs for a preloaded system app that was never
-# "updated", which leaves every one of them unloadable at first launch.
-# Fixed by a boot-time self-reinstall rather than touching the apk's
-# bytes -- its own app-protection code verifies its signing certificate
-# at runtime, so it cannot be re-signed or have its zip entries' compression
-# changed. See gcam_reinstall.rc for the full explanation.
+#
+# Deliberately NOT a PRODUCT_PACKAGES/android_app_import system app.
+# BSGGCam ships genuinely compressed JNI libraries, and
+# PackageManagerService never extracts native libs for a preloaded system
+# app that was never "updated" (every native lib in the apk would be
+# unloadable at first launch otherwise). The apk's own app-protection code
+# verifies its signing certificate at runtime, so it can't be re-signed or
+# have its zip entries' compression changed to work around that either.
+#
+# Shipping it purely as a reference copy on /vendor and having
+# gcam_install.rc run a normal `pm install` from that path at boot gets a
+# single install into /data (like any normal sideloaded app -- the
+# extraction happens automatically as part of that, no reinstall-over-
+# itself trick needed) instead of a system-partition copy *plus* a
+# duplicate /data copy *plus* the extracted libs.
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/init/gcam_reinstall.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/gcam_reinstall.rc
+    $(LOCAL_PATH)/prebuilt/gcam/BSGGCam.apk:$(TARGET_COPY_OUT_VENDOR)/etc/gcam/BSGGCam.apk \
+    $(LOCAL_PATH)/configs/init/gcam_install.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/gcam_install.rc
 
 # Cgroup and task_profiles
 PRODUCT_COPY_FILES += \

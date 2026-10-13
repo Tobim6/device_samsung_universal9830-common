@@ -7,7 +7,7 @@
 android_app_import {
     name: "BSGGCam",
     apk: "BSGGCam.apk",
-    certificate: "PRESIGNED",
+    presigned: true,
     dex_preopt: {
         enabled: false,
     },

@@ -91,6 +91,16 @@ $(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
 PRODUCT_PACKAGES += \
     BSGGCam
 
+# BSGGCam ships genuinely compressed JNI libraries; PackageManagerService
+# never extracts native libs for a preloaded system app that was never
+# "updated", which leaves every one of them unloadable at first launch.
+# Fixed by a boot-time self-reinstall rather than touching the apk's
+# bytes -- its own app-protection code verifies its signing certificate
+# at runtime, so it cannot be re-signed or have its zip entries' compression
+# changed. See gcam_reinstall.rc for the full explanation.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/init/gcam_reinstall.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/gcam_reinstall.rc
+
 # Cgroup and task_profiles
 PRODUCT_COPY_FILES += \
     system/core/libprocessgroup/profiles/cgroups_29.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json \

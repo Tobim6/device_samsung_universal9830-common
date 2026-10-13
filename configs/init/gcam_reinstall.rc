@@ -1,0 +1,22 @@
+# BSGGCam ships with genuinely compressed JNI libraries (confirmed via the
+# upstream APK itself, not a packaging mistake here), which is fine for a
+# regular sideloaded/updated app -- PackageManagerService extracts
+# compressed native libs to /data/app/.../lib at install time. It does
+# NOT do that for a system app that was never "updated"
+# (PackageAbiHelperImpl.shouldExtractLibs(): "We shouldn't attempt to
+# extract libs from system app when it was not updated"), which is
+# exactly what a PRODUCT_PACKAGES-preloaded system app is on first boot.
+# Without extraction, every native lib in the apk is unloadable, crashing
+# the app at first launch (observed: "dlopen failed: library
+# "libpairipcore.so" not found", just the first .so it happens to load).
+#
+# The APK's own code (Pairip app-protection) verifies its own signing
+# certificate at runtime, so it cannot be re-signed or have its zip
+# entries' compression touched -- the fix has to work on the byte-for-
+# byte original file. `pm install -r` over the already-installed app's
+# own apk path re-installs it through the normal install code path
+# (isUpdatedSystemApp becomes true for that install), which does extract
+# the native libs, without changing a single byte of the apk itself.
+# Harmless to repeat every boot (quick no-op once libs are extracted).
+on property:sys.boot_completed=1
+    exec_background - system system -- /system/bin/pm install -r /system/app/BSGGCam/BSGGCam.apk

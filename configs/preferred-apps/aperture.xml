@@ -2,7 +2,7 @@
 <!--
     Makes Aperture the preferred handler for photo/video capture requests
     delegated from other apps (e.g. Discord's "take photo" attachment
-    button), instead of BSG GCam -- GCam's own delegated-capture handling
+    button), instead of BSG GCam, since GCam's own delegated-capture handling
     is unreliable, so Aperture (hidden from the launcher, not meant to be
     opened directly) is kept around specifically for this. Does not cover
     STILL_IMAGE_CAMERA/VIDEO_CAMERA (launching the camera directly in

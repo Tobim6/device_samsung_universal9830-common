@@ -99,8 +99,17 @@ $(call soong_config_set_bool,samsungCameraVars,usage_64bit,true)
 # extraction happens automatically as part of that, no reinstall-over-
 # itself trick needed) instead of a system-partition copy *plus* a
 # duplicate /data copy *plus* the extracted libs.
+#
+# BSGGCam.apk is a prebuilt_etc module (prebuilt/gcam/Android.bp), not a
+# PRODUCT_COPY_FILES entry: the build explicitly rejects any .apk
+# destination there ("Prebuilt apk found in PRODUCT_COPY_FILES, use
+# BUILD_PREBUILT instead"), since normally an apk should go through
+# proper app-install handling -- which is exactly what must NOT happen
+# to this one.
+PRODUCT_PACKAGES += \
+    BSGGCam.apk
+
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/gcam/BSGGCam.apk:$(TARGET_COPY_OUT_VENDOR)/etc/gcam/BSGGCam.apk \
     $(LOCAL_PATH)/configs/init/gcam_install.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/gcam_install.rc
 
 # Makes Aperture (not GCam) the preferred resolution for IMAGE_CAPTURE/

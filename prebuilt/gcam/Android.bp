@@ -1,0 +1,19 @@
+//
+// BSG GCam (MGC_9.6.080) -- see device-common.mk's Camera section for why
+// this is installed as a plain opaque file via prebuilt_etc rather than
+// as an android_app_import/PRODUCT_PACKAGES system app.
+//
+// prebuilt_etc installs it untouched (no signing, no manifest parsing --
+// the exact point of shipping it this way) to vendor/etc/gcam/, where
+// gcam_install.rc's `pm install` picks it up at boot. PRODUCT_COPY_FILES
+// can't be used directly for this: the build explicitly rejects any .apk
+// destination there ("Prebuilt apk found in PRODUCT_COPY_FILES, use
+// BUILD_PREBUILT instead").
+//
+prebuilt_etc {
+    name: "BSGGCam.apk",
+    src: "BSGGCam.apk",
+    filename: "BSGGCam.apk",
+    relative_install_path: "gcam",
+    vendor: true,
+}
